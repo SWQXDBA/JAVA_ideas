@@ -1,0 +1,188 @@
+import java.util.*;
+public class Mysort {
+    public static void insertSort(int []array){
+        for(int bound=0;bound< array.length;bound++){
+            int v=array[bound];
+            for(int cur=bound-1;cur>=0;cur--){
+                if(array[cur]>v){
+                        int tmp=array[cur];
+                        array[cur]=array[cur+1];
+                        array[cur+1]=tmp;
+                }
+                else{
+                    array[cur+1]=v;
+                    break;
+                }
+            }
+        }
+    }
+    public static void shellSort(int []array){
+        int gap=array.length/2;
+        while(gap>=1){
+            insertSortgap(array,gap);
+            gap/=2;
+        }
+
+    }
+    public static void selectSort(int []array){
+        for(int bound=0;bound< array.length;bound++){
+            for(int cur=bound+1;cur<array.length;cur++){
+                if(array[cur]<array[bound]){
+                    int tmp=array[cur];
+                    array[cur]=array[bound];
+                    array[bound]=tmp;
+                }
+            }
+        }
+    }
+    private static void insertSortgap(int[] array, int gap) {
+        for(int bound=0;bound< array.length;bound++){
+            int v=array[bound];
+            for(int cur=bound-gap;cur>=0;cur-=gap){
+                if(array[cur]>v){
+                    int tmp=array[cur];
+                    array[cur]=array[cur+gap];
+                    array[cur+gap]=tmp;
+                }
+                else{
+                    array[cur+gap]=v;
+                    break;
+                }
+            }
+        }
+    }
+    public static void swap(int []array,int x,int y){
+        int tmp=array[x];
+        array[x]=array[y];
+        array[y]=tmp;
+    }
+    public static void heapSort(int []array){
+        creatHeap(array);
+        for(int i=array.length-1;i>0;i--){
+            swap(array,0,i);
+            shiftdown(array,i,0);
+        }
+    }
+
+    private static void creatHeap(int[] array) {
+        for(int i=(array.length-2)/2;i>=0;i--){
+            shiftdown(array,array.length,i);
+        }
+    }
+
+    private static void shiftdown(int[] array, int size, int index) {
+        int parent = index;
+        int child = parent*2+1;
+        while(child<size){
+            if(child+1<size&&array[child]<array[child+1]){
+                child++;
+            }
+            if(array[parent]<array[child])
+            swap(array,parent,child);
+            else
+                break;
+            parent=child;
+            child = parent*2+1;
+        }
+    }
+    public static void qsortHelper(int []array,int left,int right){
+        if(left>=right){
+            return;
+        }
+        int lf=left;
+        int ri=right;
+        int basic = array[right];
+        while(lf<ri){
+            for(int i=lf;i<=ri;i++){
+                if(array[i]>basic||i==ri){
+                    lf=i;
+                    break;
+                }
+            }
+            System.out.println("");
+            for(int i=ri;i>=lf;i--){
+                if(array[i]<basic||i==lf){
+                    ri=i;
+                    break;
+                }
+            }
+            System.out.println("");
+            if(lf==ri){
+            //    if(array[lf]>=array[right])
+                System.out.println("");
+                swap(array,right,lf);
+                break;
+            }
+            else
+                swap(array,lf,ri);
+            System.out.println("");
+        }
+        qsortHelper(array, left, ri-1);
+        qsortHelper(array, ri+1,right);
+
+
+    }
+    public static void qsort(int []array){
+        qsortHelper(array,0,array.length-1);
+    }
+    public static void merge(int []array,int low,int mid,int high){
+        int cur1=low;
+        int cur2=mid;
+        int outputindex=0;
+        int []output =new int[high-low];
+        while(cur1<mid&&cur2<high){
+               if(array[cur1]<=array[cur2]){
+                   output[outputindex]=array[cur1];
+                   cur1++;
+                   outputindex++;
+               }else{
+                   output[outputindex]=array[cur2];
+                   cur2++;
+                   outputindex++;
+            }
+        }
+        while(cur1<mid){
+            output[outputindex]=array[cur1];
+            cur1++;
+            outputindex++;
+        }
+        while(cur2<high){
+            output[outputindex]=array[cur2];
+            cur2++;
+            outputindex++;
+        }
+        for(int i=0;i<high-low;i++){
+            array[low+i]=output[i];
+        }
+    }
+    public static void mergeSort(int []array){
+        mergeSortHelper(array,0,array.length);
+    }
+
+    private static void mergeSortHelper(int[] array, int low, int high) {
+           if(high-low<=1){
+               return;
+           }
+           int mid=(low+high)/2;
+           mergeSortHelper(array,low,mid);
+           mergeSortHelper(array,mid,high);
+           merge(array,low,mid,high);
+    }
+    public static void mergeSortLoop(int []array){
+        for(int gap=1;gap<array.length;gap*=2){
+            for(int i=0;i<=array.length;i+=gap*2){
+                if(i+gap*2<array.length)
+                merge(array,i,i+gap,i+gap*2);
+                else{
+                    merge(array,i,i+gap,array.length);
+                    break;
+                }
+            }
+        }
+    }
+    public static void main(String []args){
+        int[] arr={9,5,3,7,2,6,8,51,23,41,32,1};
+        mergeSortLoop(arr);
+        System.out.println(Arrays.toString(arr));
+    }
+}
